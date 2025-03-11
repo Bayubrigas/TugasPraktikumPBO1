@@ -1,0 +1,68 @@
+import random
+
+attack_accuracy = 0.5
+
+class Robot:
+  def __init__(self, name, attack, hp):
+    self.name = name
+    self.attack = attack
+    self.hp = hp
+
+  def attack_enemy(self, enemy):
+    if random.random() < attack_accuracy:
+      enemy.hp -= self.attack
+      print(f"{self.name} menyerang {enemy.name} sebesar {self.attack} damage")
+    else:
+      print(f"{self.name} ngga kena awokawok")
+  
+  def regen_health(self):
+    regen = random.regen(5, 20)
+    self.hp += regen
+    print(f"{self.name} regeninasi {regen} HP")
+
+  def is_alive(self):
+    return self.hp > 0
+  
+  def status(self):
+    print(f"{self.name}: {self.hp} HP")
+
+class Game:
+  def __init__(self, robot1, robot2):
+    self.robot1 = robot1
+    self.robot2 = robot2
+
+  def start(self):
+    round = 1
+    while self.robot1.is_alive() and self.robot2.is_alive():
+      print(f"Ronde-{round} =============================================")
+      self.robot1.status()
+      self.robot2.status()
+
+      if self.robot1.is_alive():
+        action = input(f"Pilih aksi untuk {self.robot1.name} (serang/hiling): ").strip().lower()
+        if action == "serang":
+          self.robot1.attack_enemy(self.robot2)
+        elif action == "hiling":
+          self.robot1.regen_health()
+        else:
+          print("ping 999+ awokawok")
+
+      if self.robot2.is_alive():
+        action = input(f"Pilih aksi untuk {self.robot2.name} (serang/hiling): ").strip().lower()
+        if action == "serang":
+          self.robot2.attack_enemy(self.robot1)
+        elif action == "hiling":
+          self.robot2.regen_health()
+        else:
+          print("ping 999+ awokawok")
+
+      round += 1
+    
+    winner = self.robot1 if self.robot1.is_alive() else self.robot2
+    print(f"{winner.name} menang!")
+
+if __name__ == "__main__":
+  robot1 = Robot("Alok", attack = 20, hp = 100)
+  robot2 = Robot("Adam", attack = 15, hp = 110)
+  game = Game(robot1, robot2)
+  game.start()
